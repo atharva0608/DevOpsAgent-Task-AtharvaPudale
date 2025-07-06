@@ -67,7 +67,7 @@ newgrp docker
 
 ``` bash
 git clone https://github.com/atharva0608/DevOpsAgent-Task-AtharvaPudale.git
-cd DevOpsAgent-Atharva 
+cd DevOpsAgent-Task-AtharvaPudale
 ```
 
 ### 2. Set up Python environment
