@@ -31,13 +31,30 @@ def restart():
     print("Restarting container...")
     subprocess.run(["docker", "restart", "test-app"])
 
+def notify(subject, message):
+    sender = "hire.atharvapudale@gmail.com"
+    password = "oqnq crlb krbm hlvk"
+    to = "educationonlap@gmail.com"
+
+    msg = MIMEText(message)
+    msg['Subject'] = subject
+    msg['From'] = sender
+    msg['To'] = to
+
+    try:
+        with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
+            server.login(sender, password)
+            server.send_message(msg)
+        print("Email sent")
+    except Exception as e:
+        print("Email failed:", e)
 
 def log_action(cpu, after, reason):
     with open("remediation_log.txt", "a") as f:
         f.write(f"CPU: {cpu:.2f}% -> {after:.2f}% | Reason: {reason}\n")
 
 def main():
-    print(" Monitoring started")
+    print("Monitoring started")
     count = 0
 
     while True:
