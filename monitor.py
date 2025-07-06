@@ -31,9 +31,9 @@ def restart():
     subprocess.run(["docker", "restart", "test-app"])
 
 def notify(subject, message):
-    sender = "hire.atharvapudale@gmail.com"
-    password = "oqnq crlb krbm hlvk"
-    to = "educationonlap@gmail.com"
+    sender = "your-email"
+    password = "your-password"  
+    to = "recivers-email"
 
     msg = MIMEText(message)
     msg['Subject'] = subject
