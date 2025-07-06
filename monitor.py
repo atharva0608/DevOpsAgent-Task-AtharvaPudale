@@ -44,7 +44,7 @@ def notify(subject, message):
         with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
             server.login(sender, password)
             server.send_message(msg)
-        print("📬 Email sent")
+        print(" Email sent")
     except Exception as e:
         print("Email failed:", e)
 
