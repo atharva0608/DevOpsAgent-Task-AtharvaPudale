@@ -32,6 +32,6 @@ def analyze_logs_with_llm(log_text):
         else:
             return f"LLM error {response.status_code}: {response.text}"
     except requests.exceptions.Timeout:
-        return "❌ LLM connection timed out after 120 seconds."
+        return "LLM connection timed out after 120 seconds."
     except Exception as e:
-        return f"❌ LLM connection failed: {e}"
+        return f"LLM connection failed: {e}"

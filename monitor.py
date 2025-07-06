@@ -5,10 +5,9 @@ import smtplib
 from email.mime.text import MIMEText
 from llm_analyzer import analyze_logs_with_llm
 
-
 prom = PrometheusConnect(url="http://localhost:9090", disable_ssl=True)
 CPU_THRESHOLD = 80.0
-CHECK_DURATION = 120  
+CHECK_DURATION = 120
 
 def get_cpu():
     try:
@@ -20,12 +19,12 @@ def get_cpu():
         print("Error getting CPU:", e)
     return 0.0
 
-def read_logs():
+def read_logs(container="test-app"):
     try:
-        with open("sample_logs.txt", "r") as f:
-            return f.read()
-    except:
-        return "No logs found."
+        result = subprocess.run(["docker", "logs", "--tail", "50", container], capture_output=True, text=True)
+        return result.stdout.strip()
+    except Exception as e:
+        return f"Error reading logs: {e}"
 
 def restart():
     print("Restarting container...")
@@ -45,7 +44,7 @@ def notify(subject, message):
         with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
             server.login(sender, password)
             server.send_message(msg)
-        print("Email sent")
+        print("📬 Email sent")
     except Exception as e:
         print("Email failed:", e)
 
@@ -54,12 +53,16 @@ def log_action(cpu, after, reason):
         f.write(f"CPU: {cpu:.2f}% -> {after:.2f}% | Reason: {reason}\n")
 
 def main():
-    print("Monitoring started")
+    print(" Monitoring started")
     count = 0
 
     while True:
         cpu = get_cpu()
         print(f"CPU Usage: {cpu:.2f}%")
+
+        
+        with open("cpu_status.txt", "w") as f:
+            f.write(f"{cpu:.2f}")
 
         if cpu > CPU_THRESHOLD:
             count += 1
@@ -69,7 +72,11 @@ def main():
         if count >= (CHECK_DURATION // 30):
             logs = read_logs()
             reason = analyze_logs_with_llm(logs)
-            print("LLM Analysis:", reason)
+            print(" LLM Analysis:", reason)
+
+            
+            with open("last_analysis.txt", "w") as f:
+                f.write(reason)
 
             restart()
             time.sleep(60)
